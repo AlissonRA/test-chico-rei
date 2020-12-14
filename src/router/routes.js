@@ -1,45 +1,35 @@
-// Layout
-// import DefaultLayout from '@/layouts/DefaultLayout';
+const Home = () => import(/* webpackChunkName: "home" */ "@/views/Home.vue");
 
-// GeneralViews
-// import NotFound from '@/views/GeneralViews/NotFoundPage';
+// Products
+const IndexProducts = () => import(/* webpackChunkName: "products" */ "@/views/products/Index.vue");
+const ShowProducts = () => import(/* webpackChunkName: "products" */ "@/views/products/Show.vue");
 
-const Home = () => import('@/pages/index.vue');
+// Checkout
+const Cart = () => import(/* webpackChunkName: "checkout" */ "@/views/Cart.vue");
 
 const routes = [
   {
-    path: '/',
+    path: "/",
     component: Home,
-    name: 'index'
+    name: "index"
   },
-  // {
-  //   path: '/products',
-  //   component: DefaultLayout,
-  //   redirect: {name: 'employee.index'},
-  //   name: 'product',
-  //   meta: {BreadCrumb: 'Produtos'},
-  //   children: [
-  //     ...withPrefix('/employees', 'employee.','Funcionários', [
-  //       {path: '/', name: 'index', component: IndexEmployee, meta: {BreadCrumb: 'Listagem'}},
-  //       {path: '/show/:id', name: 'show', component: ShowEmployee, props: true, meta: {BreadCrumb: 'Exibição'}},
-  //     ])
-  //   ]
-  // }
-  // {
-  //   path: '/checkout',
-  //   component: DefaultLayout,
-  //   redirect: {name: 'customer.index'},
-  //   name: 'checkout',
-  //   meta: {BreadCrumb: 'Checkout'},
-  //   children: [
-  //     ...withPrefix('/customers', 'customer.', true, 'Clientes',[
-  //       {path: '/', name: 'index', component: IndexCustomer, meta: {BreadCrumb: 'Listagem'}},
-  //       {path: '/create', name: 'create', component: CreateCustomer, meta: {BreadCrumb: 'Criação'}},
-  //       {path: '/edit/:id', name: 'edit', component: EditCustomer, props: true, meta: {BreadCrumb: 'Edição'}},
-  //       {path: '/show/:id', name: 'show', component: ShowCustomer, props: true, meta: {BreadCrumb: 'Exibição'}},
-  //     ])
-  //   ]
-  // }
+  {
+    path: "/produtos",
+    name: "products",
+    component: IndexProducts,
+    props: route => ({ category: route.query.c })
+  },
+  {
+    path: "/produtos/produto/:id",
+    name: "products-show",
+    component: ShowProducts,
+    props: true
+  },
+  {
+    path: "/carrinho",
+    name: "cart",
+    component: Cart
+  }
 ];
 
 export default routes;

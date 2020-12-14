@@ -1,32 +1,38 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view />
+  <div>
+    <Loading :is-loading="loading" />
+    <notifications />
+    <header-component />
+
+    <main id="content" role="main">
+      <router-view v-if="!loading" />
+    </main>
+
+    <footer-component />
   </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import HeaderComponent from "@/components/Layout/Header";
+import FooterComponent from "@/components/Layout/Footer";
 
-#nav {
-  padding: 30px;
-}
+import { mapActions, mapState } from "vuex";
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+export default {
+  components: {
+    HeaderComponent,
+    FooterComponent
+  },
+  computed: {
+    ...mapState({
+      loading: state => state.loading
+    })
+  },
+  created() {
+    this.init();
+  },
+  methods: {
+    ...mapActions(["init"])
+  }
+};
+</script>

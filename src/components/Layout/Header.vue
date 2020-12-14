@@ -1,45 +1,65 @@
 <template>
-  <header id="header" class="u-header u-header--abs-top-md u-header--bg-transparent u-header--show-hide-md" data-header-fix-moment="500" data-header-fix-effect="slide">
-    <div class="u-header__section">
+  <header id="header" class="header">
+    <div class="header-section">
       <div id="logoAndNav" class="container">
-        <nav class="js-mega-menu navbar navbar-expand-md u-header__navbar u-header__navbar--no-space">
+        <!-- Nav -->
+        <nav class="js-mega-menu navbar navbar-expand-lg">
           <!-- Logo -->
-          <a class="navbar-brand u-header__navbar-brand u-header__navbar-brand-center" href="#" aria-label="Erga Software">
-            <img src="~/static/logo.png" alt="Logo">
-            <!--<span class="u-header__navbar-brand-text"><i class="fas fa-dice-d20"/> Erga</span>-->
-          </a>
+          <div class="d-flex">
+            <a
+              href="/"
+              class="navbar-logo header-logo-diamond d-none d-sm-block"
+            >
+              <img src="@/assets/svg/logos/logo-diamond.svg" alt="Logo" />
+            </a>
+            <a href="/" class="navbar-logo header-logo-cr">
+              <img src="@/assets/svg/logos/logo-cr.svg" alt="Logo" />
+            </a>
+          </div>
           <!-- End Logo -->
 
           <!-- Responsive Toggle Button -->
           <button
             type="button"
-            class="navbar-toggler btn u-hamburger"
+            class="navbar-toggler btn btn-icon btn-sm rounded-circle"
             aria-label="Toggle navigation"
             aria-expanded="false"
             aria-controls="navBar"
             data-toggle="collapse"
             data-target="#navBar"
           >
-            <span id="hamburgerTrigger" class="u-hamburger__box">
-              <span class="u-hamburger__inner" />
+            <span class="navbar-toggler-default">
+              <i class="fas fa-equals"></i>
+            </span>
+            <span class="navbar-toggler-toggled">
+              <i class="fas fa-times"></i>
             </span>
           </button>
           <!-- End Responsive Toggle Button -->
 
           <!-- Navigation -->
-          <div id="navBar" class="collapse navbar-collapse u-header__navbar-collapse">
-            <ul class="navbar-nav u-header__navbar-nav">
-              <li class="nav-item u-header__nav-item">
-                <a class="nav-link u-header__nav-link" :href="getAdminUrl()" target="_blank">
-                  Acessar <i class="fas fa-external-link-square-alt" />
-                </a>
+          <div id="navBar" class="collapse navbar-collapse">
+            <ul class="navbar-nav">
+              <!-- Home -->
+              <li class="hs-has-mega-menu navbar-nav-item">
+                <router-link
+                  class="hs-mega-menu-invoker nav-link"
+                  :to="{ name: 'products' }"
+                >
+                  Produtos
+                </router-link>
               </li>
+              <!-- End Home -->
 
               <!-- Button -->
-              <li class="nav-item u-header__nav-last-item">
-                <a class="btn btn-sm btn-primary transition-3d-hover" href="#" target="_blank">
-                  Assinar
-                </a>
+              <li class="navbar-nav-last-item">
+                <router-link
+                  class="btn btn-sm btn-primary btn-pill transition-3d-hover btn-icon"
+                  :to="{ name: 'cart' }"
+                  target="_blank"
+                >
+                  <i class="fas fa-shopping-cart"></i>
+                </router-link>
               </li>
               <!-- End Button -->
             </ul>
@@ -52,11 +72,45 @@
   </header>
 </template>
 
-<script>
-export default {
-  name: 'Header',
-  methods: {
-    getAdminUrl: () => process.env.ADMIN_URL
+<style scoped>
+.navbar-logo {
+  display: inline-block;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  margin-right: 0;
+  font-size: 1.25rem;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+.navbar-logo img {
+  width: 3rem;
+}
+
+.header-logo-cr img {
+  position: absolute;
+  margin-top: -73px;
+  width: 9rem;
+}
+
+@media (min-width: 576px) {
+  .header-logo-cr img {
+    margin-top: -45px;
   }
 }
+</style>
+
+<script>
+export default {
+  name: "Header",
+  methods: {
+    testNotification() {
+      this.$notify({
+        message: "Ops, não tenho funcionalidade por enquanto!",
+        icon: "ni ni-fat-remove",
+        type: "info"
+      });
+    }
+  }
+};
 </script>

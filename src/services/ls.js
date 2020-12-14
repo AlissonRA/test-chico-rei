@@ -1,15 +1,14 @@
 const Storage = window.localStorage;
 
 function localStorageExpires() {
-  let toRemove = [],                      // Items to remove
-    currentDate = new Date().getTime();  // Current date in milliseconds
+  let toRemove = [], // Items to remove
+    currentDate = new Date().getTime(); // Current date in milliseconds
 
   for (let i = 0, j = Storage.length; i < j; i++) {
     let current = Storage.getItem(Storage.key(i));
 
     // Check item format to avoid conflict with other applications
     if (current && /^\{(.*?)\}$/.test(current)) {
-
       // Decode back to JSON
       current = JSON.parse(current);
 
@@ -29,26 +28,25 @@ function localStorageExpires() {
 }
 
 export const ls = {
-  async set(lastname = '', value = {}, time = null) {
+  async set(lastname = "", value = {}, time = null) {
     let json = {};
 
     if (time) {
-      let expirarem = (new Date().getTime()) + (60000 * time);
+      let expirarem = new Date().getTime() + 60000 * time;
 
-      json = JSON.stringify({value: value, expires: expirarem});
+      json = JSON.stringify({ value: value, expires: expirarem });
     } else {
-      json = JSON.stringify({value: value});
+      json = JSON.stringify({ value: value });
     }
 
     await Storage.setItem(lastname, json);
   },
   get(lastname) {
-    localStorageExpires();  //Cleans items
+    localStorageExpires(); //Cleans items
 
     let itemValue = Storage[lastname];
 
     if (itemValue && /^\{(.*?)\}$/.test(itemValue)) {
-
       // Decode back to JSON
       let current = JSON.parse(itemValue);
 
@@ -72,7 +70,7 @@ export const ls = {
       local.push(pushValue.value);
     }
 
-    return local
+    return local;
   },
   remove(lastname) {
     // Remove Item from Passed Key

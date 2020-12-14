@@ -1,9 +1,7 @@
-import { filter } from 'lodash'
-
-import Template from '@/models/Template'
+import { find } from "lodash";
 
 export default {
-  getByDefault: state => (defaults) => {
-    return filter(state.templates, { is_default: defaults }).map(data => new Template(data))
+  getProductById: state => id => {
+    return find(state.products, { id });
   }
-}
+};

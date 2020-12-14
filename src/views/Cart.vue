@@ -1,885 +1,407 @@
 <template>
-  <div>
-    <!-- Hero Section -->
-    <div class="position-relative">
-      <!-- Main Slider -->
-      <div id="heroSlider" class="bg-light">
-        <!-- Slide -->
-        <div class="js-slide" v-for="slide in heroSection" :key="`${slide.id}-slide`">
-          <div class="container space-top-2 space-bottom-3">
-            <div class="row align-items-lg-center">
-              <div class="col-lg-5 order-lg-2 mb-7 mb-lg-0">
-                <div class="mb-6">
-                  <h1 class="display-4 mb-4">{{ slide.name }}</h1>
-                  <p>
-                    {{ slide.description }}
-                  </p>
-                </div>
-                <a href="#" class="btn btn-primary btn-pill transition-3d-hover px-5 mr-2">
-                  R$59 - Adicionar ao Carrinho
-                </a>
-              </div>
-              <div class="col-lg-6 order-lg-1">
-                <div class="w-85 mx-auto">
+  <div v-if="!checkCartEmpty">
+    <!-- Cart Section -->
+    <div class="container space-1 space-md-2">
+      <div class="row">
+        <div class="col-lg-8 mb-7 mb-lg-0">
+          <!-- Title -->
+          <div
+            class="d-flex justify-content-between align-items-end border-bottom pb-3 mb-7"
+          >
+            <h1 class="h3 mb-0">Carrinho</h1>
+            <span>{{ cart.length }} items</span>
+          </div>
+          <!-- End Title -->
+
+          <form>
+            <!-- Product Content -->
+            <div
+              class="border-bottom pb-5 mb-5"
+              v-for="product in cart"
+              :key="product.id"
+            >
+              <div class="media">
+                <div class="max-w-15rem w-100 mr-3">
                   <img
                     class="img-fluid"
-                    :src="requireImg(slide.img)"
+                    :src="requireImg(product.img)"
                     alt="Image Description"
                   />
                 </div>
+                <div class="media-body">
+                  <div class="row">
+                    <div class="col-md-7 mb-3 mb-md-0">
+                      <a class="h5 d-block" href="javascript:;">{{
+                        product.name
+                      }}</a>
+
+                      <div class="d-block d-md-none">
+                        <span class="h5 d-block mb-1">{{
+                          product.price | currency
+                        }}</span>
+                      </div>
+
+                      <div class="text-body font-size-1 mb-1">
+                        <span>Gênero:</span>
+                        <span>{{
+                          product.gender === "male" ? " Masculino" : " Feminino"
+                        }}</span>
+                      </div>
+                      <div class="text-body font-size-1 mb-1">
+                        <span>Tamanho:</span>
+                        <span> {{ product.size }}</span>
+                      </div>
+                    </div>
+
+                    <div class="col-md-3">
+                      <div class="row">
+                        <div class="col-auto">
+                          <select
+                            @change="updateCart"
+                            :data-id="product.id"
+                            class="custom-select custom-select-sm w-auto mb-3"
+                            :value="product.quantity"
+                          >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                          </select>
+                        </div>
+
+                        <div class="col-auto">
+                          <a
+                            class="d-block text-body font-size-1 mb-1"
+                            href="javascript:;"
+                            @click="removeItem(product.id)"
+                          >
+                            <i
+                              class="far fa-trash-alt text-hover-primary mr-1"
+                            ></i>
+                            <span class="font-size-1 text-hover-primary"
+                              >Remove</span
+                            >
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      class="col-4 col-md-2 d-none d-md-inline-block text-right"
+                    >
+                      <span class="h5 d-block mb-1">{{
+                        product.price | currency
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <!-- End Slide -->
-      </div>
-      <!-- End Main Slider -->
+            <!-- End Product Content -->
 
-      <!-- Slider Nav -->
-      <div class="position-absolute bottom-0 w-100">
-        <div class="container space-bottom-1">
-          <div id="heroSliderNav" class="slick-slider max-w-27rem mx-auto">
-            <div class="slick-list">
-              <div
-                class="slick-track"
-                style="opacity: 1;width: 210px;transform: translate3d(0px, 0px, 0px);"
-              >
-                <div
-                  class="js-slide slick-slide p-1"
-                  v-for="sliderNav in heroSection"
-                  :key="`${sliderNav.id}-slideNav`"
-                >
+            <div class="d-sm-flex justify-content-end">
+              <router-link class="font-weight-bold" to="/produtos">
+                <i class="fas fa-angle-left fa-xs mr-1"></i>
+                Continue Comprando
+              </router-link>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="pl-lg-4">
+            <!-- Order Summary -->
+            <div class="card shadow-soft p-4 mb-4">
+              <!-- Title -->
+              <div class="border-bottom pb-4 mb-4">
+                <h2 class="h3 mb-0">Resumo do Pedido</h2>
+              </div>
+              <!-- End Title -->
+
+              <div class="border-bottom pb-4 mb-4">
+                <div class="media align-items-center mb-3">
+                  <span class="d-block font-size-1 mr-3">Subtotal</span>
+                  <div class="media-body text-right">
+                    <span class="text-dark font-weight-bold">{{
+                      subtotal | currency
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="media align-items-center mb-3">
+                  <span class="d-block font-size-1 mr-3">Frete</span>
+                  <div class="media-body text-right">
+                    <span class="text-dark font-weight-bold">{{
+                      delivery | currency
+                    }}</span>
+                  </div>
+                </div>
+
+                <!-- Checkbox -->
+                <div class="card shadow-none mb-3">
+                  <div class="card-body p-0">
+                    <div
+                      class="custom-control custom-radio d-flex align-items-center small"
+                    >
+                      <input
+                        v-model="delivery"
+                        type="radio"
+                        class="custom-control-input"
+                        id="deliveryRadio1"
+                        name="deliveryRadio"
+                        :value="0"
+                        checked
+                      />
+                      <label
+                        class="custom-control-label ml-1"
+                        for="deliveryRadio1"
+                      >
+                        <span class="d-block font-size-1 font-weight-bold mb-1"
+                          >Grátis - Entrega Simples</span
+                        >
+                        <span class="d-block text-muted"
+                          >Entrega de 5 a 6 dias úteis.</span
+                        >
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Checkbox -->
+
+                <!-- Checkbox -->
+                <div class="card shadow-none">
+                  <div class="card-body p-0">
+                    <div
+                      class="custom-control custom-radio d-flex align-items-center small"
+                    >
+                      <input
+                        v-model="delivery"
+                        type="radio"
+                        :value="27.99"
+                        class="custom-control-input"
+                        id="deliveryRadio2"
+                        name="deliveryRadio"
+                      />
+                      <label
+                        class="custom-control-label ml-1"
+                        for="deliveryRadio2"
+                      >
+                        <span class="d-block font-size-1 font-weight-bold mb-1"
+                          >R$27.99 - Entrega Expressa</span
+                        >
+                        <span class="d-block text-muted"
+                          >Entrega de 2 a 3 dias úteis.</span
+                        >
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <!-- End Checkbox -->
+              </div>
+
+              <div class="media align-items-center mb-3">
+                <span class="d-block font-size-1 mr-3">Desconto</span>
+                <div class="media-body text-right">
+                  <span class="text-danger font-weight-bold">- {{
+                    discount | currency
+                  }}</span>
+                </div>
+              </div>
+
+              <div class="media align-items-center mb-3">
+                <span class="d-block font-size-1 mr-3">Total</span>
+                <div class="media-body text-right">
+                  <span class="text-dark font-weight-bold">{{
+                    total | currency
+                  }}</span>
+                </div>
+              </div>
+
+              <div class="row mx-1">
+                <div class="col px-1 my-1">
                   <a
-                    class="d-block avatar avatar-circle border p-1"
+                    class="btn btn-primary btn-block btn-pill transition-3d-hover"
                     href="javascript:;"
+                    >Finalizar</a
+                  >
+                </div>
+                <div class="col px-1 my-1">
+                  <button
+                    type="submit"
+                    class="btn btn-soft-warning btn-block btn-pill transition-3d-hover"
                   >
                     <img
-                      class="avatar-img"
-                      :src="requireImg(sliderNav.icon)"
-                      alt="Image Description"
+                      src="@/assets/img/logos/paypal.png"
+                      width="70"
+                      alt="PayPal logo"
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <!-- End Slider Nav -->
-    </div>
-    <!-- End Hero Section -->
+            <!-- End Order Summary -->
 
-    <!-- Features Section -->
-    <div class="border-bottom">
-      <div class="container space-2">
-        <div class="row">
-          <div class="col-md-4 mb-7 mb-md-0">
-            <!-- Contacts -->
-            <div class="media">
-              <figure class="w-100 max-w-8rem mr-4">
-                <img
-                  class="img-fluid"
-                  src="@/assets/svg/icons/icon-4.svg"
-                  alt="SVG"
-                />
-              </figure>
-              <div class="media-body">
-                <h4 class="mb-1">Suporte 24/7</h4>
-                <p class="font-size-1 mb-0">
-                  Contate-nos 24 horas por dia, 7 dias por semana.
-                </p>
+            <!-- Accordion -->
+            <div id="shopCartAccordion" class="accordion card shadow-soft mb-4">
+              <!-- Card -->
+              <div class="card rounded">
+                <div class="card-header card-collapse" id="shopCartHeadingOne">
+                  <h3 class="mb-0">
+                    <a
+                      class="btn btn-link btn-block card-btn font-weight-bold collapsed"
+                      href="javascript:;"
+                      role="button"
+                      data-toggle="collapse"
+                      data-target="#shopCartOne"
+                      aria-expanded="false"
+                      aria-controls="shopCartOne"
+                    >
+                      Cupom?
+                      <i
+                        class="far fa-question-circle text-body ml-1"
+                        data-container="body"
+                        data-toggle="popover"
+                        data-placement="top"
+                        data-trigger="hover"
+                        title="Cupom de Desconto"
+                        data-content="Valid on full priced items only. Some products maybe excluded."
+                      ></i>
+                    </a>
+                  </h3>
+                </div>
+                <div
+                  id="shopCartOne"
+                  class="collapse"
+                  aria-labelledby="shopCartHeadingOne"
+                  data-parent="#shopCartAccordion"
+                >
+                  <form class="js-validate p-4">
+                    <div class="input-group input-group-pill mb-3">
+                      <input
+                        v-model="cupom"
+                        type="text"
+                        class="form-control"
+                        name="name"
+                        placeholder="Código"
+                      />
+                      <div class="input-group-append">
+                        <button
+                          type="button"
+                          @click="checkCupom"
+                          class="btn btn-block btn-primary btn-pill"
+                        >
+                          Enviar
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
               </div>
+              <!-- End Card -->
             </div>
-            <!-- End Contacts -->
-          </div>
-
-          <div class="col-md-4 mb-7 mb-md-0">
-            <!-- Contacts -->
-            <div class="media">
-              <figure class="w-100 max-w-8rem mr-4">
-                <img
-                  class="img-fluid"
-                  src="@/assets/svg/icons/icon-64.svg"
-                  alt="SVG"
-                />
-              </figure>
-              <div class="media-body">
-                <h4 class="mb-1">1ª Troca Grátis</h4>
-                <p class="font-size-1 mb-0">
-                  Sua primeira troca é por nossa conta!
-                </p>
-              </div>
-            </div>
-            <!-- End Contacts -->
-          </div>
-
-          <div class="col-md-4">
-            <!-- Contacts -->
-            <div class="media">
-              <figure class="w-100 max-w-8rem mr-4">
-                <img
-                  class="img-fluid"
-                  src="@/assets/svg/icons/icon-65.svg"
-                  alt="SVG"
-                />
-              </figure>
-              <div class="media-body">
-                <h4 class="mb-1">FRETE GRÁTIS</h4>
-                <p class="font-size-1 mb-0">
-                  Em todos os pedidos acima de R$150.
-                </p>
-              </div>
-            </div>
-            <!-- End Contacts -->
+            <!-- End Accordion -->
           </div>
         </div>
       </div>
     </div>
-    <!-- End Features Section -->
-
-    <!-- Categories Section -->
+    <!-- End Cart Section -->
+  </div>
+  <div v-else>
+    <!-- Cart Section -->
     <div class="container space-2 space-lg-3">
-      <!-- Title -->
-      <div class="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-        <h2>Nossos principais produtos.</h2>
-      </div>
-      <!-- End Title -->
-
-      <div class="row mb-2">
-        <div class="col-md-4 mb-3">
-          <!-- Card -->
-          <div class="card border shadow-none d-block">
-            <div class="card-body d-flex align-items-center p-0">
-              <div class="w-65 border-right">
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x400/img3.jpg"
-                  alt="Image Description"
-                />
-              </div>
-              <div class="w-35">
-                <div class="border-bottom">
-                  <img
-                    class="img-fluid"
-                    src="@/assets/img/380x360/img8.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x360/img7.jpg"
-                  alt="Image Description"
-                />
-              </div>
-            </div>
-            <div class="card-footer text-center py-4">
-              <h3 class="mb-1">Camisetas</h3>
-              <span class="d-block text-muted font-size-1 mb-3"
-                >A partir de R$29.99</span
-              >
-              <a
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover px-5"
-                href="#"
-                >Ver Tudo</a
-              >
-            </div>
-          </div>
-          <!-- End Card -->
+      <div class="w-md-80 w-lg-50 text-center mx-md-auto">
+        <figure class="max-w-10rem max-w-sm-15rem mx-auto mb-3">
+          <img
+            class="img-fluid"
+            src="@/assets/svg/illustrations/empty-cart.svg"
+            alt="SVG"
+          />
+        </figure>
+        <div class="mb-5">
+          <h1 class="h2">Seu carrinho está vazio no momento</h1>
+          <p>
+            Antes de prosseguir com a finalização da compra, você deve adicionar
+            alguns produtos ao seu carrinho de compras. Você encontrará muitos
+            produtos interessantes em nossa página "Loja".
+          </p>
         </div>
-
-        <div class="col-md-4 mb-3">
-          <!-- Card -->
-          <div class="card border shadow-none d-block">
-            <div class="card-body d-flex align-items-center p-0">
-              <div class="w-65 border-right">
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x400/img4.jpg"
-                  alt="Image Description"
-                />
-              </div>
-              <div class="w-35">
-                <div class="border-bottom">
-                  <img
-                    class="img-fluid"
-                    src="@/assets/img/380x360/img6.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x360/img5.jpg"
-                  alt="Image Description"
-                />
-              </div>
-            </div>
-            <div class="card-footer text-center py-4">
-              <h3 class="mb-1">Capas</h3>
-              <span class="d-block text-muted font-size-1 mb-3"
-                >A partir de R$29.99</span
-              >
-              <a
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover px-5"
-                href="#"
-                >Ver Tudo</a
-              >
-            </div>
-          </div>
-          <!-- End Card -->
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <!-- Card -->
-          <div class="card border shadow-none d-block">
-            <div class="card-body d-flex align-items-center p-0">
-              <div class="w-65 border-right">
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x400/img2.jpg"
-                  alt="Image Description"
-                />
-              </div>
-              <div class="w-35">
-                <div class="border-bottom">
-                  <img
-                    class="img-fluid"
-                    src="@/assets/img/380x360/img4.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x360/img3.jpg"
-                  alt="Image Description"
-                />
-              </div>
-            </div>
-            <div class="card-footer text-center py-4">
-              <h3 class="mb-1">Bonés</h3>
-              <span class="d-block text-muted font-size-1 mb-3"
-                >A partir de R$33.99</span
-              >
-              <a
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover px-5"
-                href="#"
-                >Ver Tudo</a
-              >
-            </div>
-          </div>
-          <!-- End Card -->
-        </div>
-      </div>
-    </div>
-    <!-- End Categories Section -->
-
-    <!-- Products Section -->
-    <div class="container space-2 space-lg-3">
-      <!-- Title -->
-      <div class="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-        <h2>Oque mais está vendendo</h2>
-      </div>
-      <!-- End Title -->
-
-      <!-- Products -->
-      <div class="row mx-n2 mx-sm-n3 mb-3">
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img3.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 left-0 pt-3 pl-3">
-                <span class="badge badge-success badge-pill">New arrival</span>
-              </div>
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Accessories</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Herschel backpack in dark blue</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$56.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                  </div>
-                  <span>0</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img1.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Clothing</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Front hoodie</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$91.88</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star text-muted"></i>
-                  </div>
-                  <span>40</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img4.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 left-0 pt-3 pl-3">
-                <span class="badge badge-danger badge-pill">Sold out</span>
-              </div>
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Accessories</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Herschel backpack in gray</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$29.99</span>
-                  <span class="text-body ml-1"><del>$33.99</del></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                  </div>
-                  <span>125</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img6.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Clothing</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Front Originals adicolor t-shirt with trefoil logo</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$38.00</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                  </div>
-                  <span>9</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img7.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Accessories</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Front mesh baseball cap with signature logo</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$8.88</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star text-muted"></i>
-                  </div>
-                  <span>31</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img2.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 left-0 pt-3 pl-3">
-                <span class="badge badge-success badge-pill">New arrival</span>
-              </div>
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Clothing</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Front Originals adicolor t-shirt in gray</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$24.00</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                  </div>
-                  <span>0</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img5.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Clothing</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >COLLUSION Unisex mechanic print t-shirt</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$43.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                  </div>
-                  <span>0</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img8.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Accessories</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Billabong Walled snapback in green</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$12.00</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                  </div>
-                  <span>2</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-      </div>
-      <!-- End Products -->
-
-      <div class="text-center">
-        <a class="btn btn-primary btn-pill transition-3d-hover px-5" href="#"
-          >Mais Produtos</a
+        <router-link
+          class="btn btn-primary btn-pill transition-3d-hover px-5"
+          to="/produtos"
+          >Ir a Loja</router-link
         >
       </div>
     </div>
-    <!-- End Products Section -->
+    <!-- End Cart Section -->
   </div>
 </template>
 
-<style scoped>
-.slick-list {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-}
-.slick-track {
-  position: relative;
-  top: 0;
-  left: 0;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-.slick-slide {
-  float: left;
-  height: 100%;
-  min-height: 1px;
-}
-</style>
-
 <script>
+import { mapState, mapActions } from "vuex";
+import { isEmpty, sumBy } from "lodash";
+import { http } from "@/services";
+
 export default {
-  name: "Home",
+  name: "Cart",
   data: () => ({
-    heroSection: [
-      {
-        id: 1,
-        name: "Boné Frontal",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sedeiusmod tempor incidunt ut labore et dolore magna aliqua.",
-        img: "/img/mockups/img5.png",
-        icon: "/img/100x100/img13.jpg"
-      },
-      {
-        id: 2,
-        name: "Boné Frontal",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sedeiusmod tempor incidunt ut labore et dolore magna aliqua.",
-        img: "/img/mockups/img6.png",
-        icon: "/img/100x100/img14.jpg"
-      },
-      {
-        id: 3,
-        name: "Boné Frontal",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sedeiusmod tempor incidunt ut labore et dolore magna aliqua.",
-        img: "/img/mockups/img1.png",
-        icon: "/img/100x100/img15.jpg"
-      }
-    ]
+    delivery: 0,
+    discount: 0,
+    cupom: ""
   }),
+  computed: {
+    ...mapState({
+      cart: state => state.cart
+    }),
+    checkCartEmpty() {
+      return isEmpty(this.cart);
+    },
+    subtotal() {
+      return sumBy(this.cart, "price_total");
+    },
+    total() {
+      return this.subtotal + this.delivery - this.discount;
+    }
+  },
   methods: {
+    ...mapActions(["updateItemCart", "deleteItemCart"]),
+    checkCupom() {
+      const discount = 20;
+
+      http.get(`/cupom/${this.cupom}`).then(response => {
+        if (response.data.valid) {
+          this.discount = discount;
+          this.$notify({
+            message: "Oba, o desconto foi adicionado!",
+            icon: "ni ni-fat-remove",
+            type: "success"
+          });
+        } else {
+          this.$notify({
+            message: "Ops, você inseriu um cupom inválido!",
+            icon: "ni ni-fat-remove",
+            type: "danger"
+          });
+        }
+      });
+    },
+    updateCart(event) {
+      this.updateItemCart({
+        id: event.target.dataset.id,
+        quantity: event.target.value
+      });
+    },
+    removeItem(id) {
+      this.deleteItemCart(id);
+    },
     requireImg(path) {
       return require("@/assets" + path);
     }
-  },
-  mounted() {}
+  }
 };
 </script>

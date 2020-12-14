@@ -1,885 +1,582 @@
 <template>
   <div>
     <!-- Hero Section -->
-    <div class="position-relative">
-      <!-- Main Slider -->
-      <div id="heroSlider" class="bg-light">
-        <!-- Slide -->
-        <div class="js-slide" v-for="slide in heroSection" :key="`${slide.id}-slide`">
-          <div class="container space-top-2 space-bottom-3">
-            <div class="row align-items-lg-center">
-              <div class="col-lg-5 order-lg-2 mb-7 mb-lg-0">
-                <div class="mb-6">
-                  <h1 class="display-4 mb-4">{{ slide.name }}</h1>
-                  <p>
-                    {{ slide.description }}
-                  </p>
-                </div>
-                <a href="#" class="btn btn-primary btn-pill transition-3d-hover px-5 mr-2">
-                  R$59 - Adicionar ao Carrinho
-                </a>
-              </div>
-              <div class="col-lg-6 order-lg-1">
-                <div class="w-85 mx-auto">
+    <div class="container space-top-1 space-top-sm-2">
+      <div class="row">
+        <div class="col-lg-7 mb-7 mb-lg-0">
+          <div class="pr-lg-4">
+            <div class="position-relative">
+              <!-- Main Slider -->
+              <div id="heroSlider" class="js-slick-carousel border rounded">
+                <div class="js-slide">
                   <img
-                    class="img-fluid"
-                    :src="requireImg(slide.img)"
+                    class="img-fluid w-100 rounded"
+                    :src="product.img ? requireImg(product.img) : ''"
                     alt="Image Description"
                   />
                 </div>
               </div>
+              <!-- End Main Slider -->
             </div>
           </div>
         </div>
-        <!-- End Slide -->
-      </div>
-      <!-- End Main Slider -->
 
-      <!-- Slider Nav -->
-      <div class="position-absolute bottom-0 w-100">
-        <div class="container space-bottom-1">
-          <div id="heroSliderNav" class="slick-slider max-w-27rem mx-auto">
-            <div class="slick-list">
-              <div
-                class="slick-track"
-                style="opacity: 1;width: 210px;transform: translate3d(0px, 0px, 0px);"
-              >
-                <div
-                  class="js-slide slick-slide p-1"
-                  v-for="sliderNav in heroSection"
-                  :key="`${sliderNav.id}-slideNav`"
+        <!-- Product Description -->
+        <div class="col-lg-5">
+          <!-- Rating -->
+          <div class="d-flex align-items-center small mb-2">
+            <div class="text-warning mr-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <a class="link-underline" href="javascript:;"
+            >Read all 287 reviews</a
+            >
+          </div>
+          <!-- End Rating -->
+
+          <!-- Title -->
+          <div class="mb-5">
+            <h1 class="h2">
+              {{ product.name }}
+            </h1>
+            <p>
+              {{ product.brief_description }}
+            </p>
+          </div>
+          <!-- End Title -->
+
+          <!-- Price -->
+          <div class="mb-5">
+            <h2 class="font-size-1 text-body mb-0">Preço:</h2>
+            <span class="text-dark font-size-2 font-weight-bold">{{
+                product.price | currency
+              }}</span>
+          </div>
+          <!-- End Price -->
+
+          <!-- Quantity -->
+          <div class="border rounded py-2 px-3 mb-3">
+            <div class="js-quantity-counter row align-items-center">
+              <div class="col-7">
+                <small class="d-block text-body font-weight-bold"
+                >Selecione a quantidade</small
                 >
-                  <a
-                    class="d-block avatar avatar-circle border p-1"
-                    href="javascript:;"
-                  >
-                    <img
-                      class="avatar-img"
-                      :src="requireImg(sliderNav.icon)"
-                      alt="Image Description"
-                    />
-                  </a>
-                </div>
+                <input
+                  v-model="quantity"
+                  class="js-result form-control h-auto border-0 rounded p-0"
+                  type="text"
+                />
+              </div>
+              <div class="col-5 text-right">
+                <a
+                  class="js-minus btn btn-xs btn-icon btn-outline-secondary rounded-circle"
+                  href="javascript:;"
+                  @click="quantity > 1 ? quantity-- : ''"
+                >
+                  <i class="fas fa-minus"></i>
+                </a>
+                <a
+                  class="js-plus btn btn-xs btn-icon btn-outline-secondary rounded-circle"
+                  href="javascript:;"
+                  @click="quantity++"
+                >
+                  <i class="fas fa-plus"></i>
+                </a>
               </div>
             </div>
           </div>
+          <!-- End Quantity -->
+
+          <!-- Accordion -->
+          <div id="shopCartAccordion" class="accordion mb-5">
+            <!-- Card -->
+            <div class="card border shadow-none">
+              <div class="card-body card-collapse" id="shopCardHeadingOne">
+                <a
+                  class="btn btn-link btn-block card-btn collapsed"
+                  href="javascript:;"
+                  role="button"
+                  data-toggle="collapse"
+                  data-target="#shopCardOne"
+                  aria-expanded="false"
+                  aria-controls="shopCardOne"
+                >
+                  <span class="row align-items-center">
+                    <span class="col-9">
+                      <span class="media align-items-center">
+                        <span class="w-100 max-w-6rem mr-3">
+                          <img
+                            class="img-fluid"
+                            src="@/assets/svg/icons/icon-65.svg"
+                            alt="SVG"
+                          />
+                        </span>
+                        <span class="media-body">
+                          <span class="d-block font-size-1 font-weight-bold"
+                          >Free shipping</span
+                          >
+                        </span>
+                      </span>
+                    </span>
+                    <span class="col-3 text-right">
+                      <span class="card-btn-toggle">
+                        <span class="card-btn-toggle-default">&plus;</span>
+                        <span class="card-btn-toggle-active">&minus;</span>
+                      </span>
+                    </span>
+                  </span>
+                </a>
+              </div>
+              <div
+                id="shopCardOne"
+                class="collapse"
+                aria-labelledby="shopCardHeadingOne"
+                data-parent="#shopCartAccordion"
+              >
+                <div class="card-body">
+                  <p class="small mb-0">
+                    We offer free shipping anywhere in the U.S. A skilled
+                    delivery team will bring the boxes into your office.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- End Card -->
+
+            <!-- Card -->
+            <div class="card border shadow-none">
+              <div class="card-body card-collapse" id="shopCardHeadingTwo">
+                <a
+                  class="btn btn-link btn-block card-btn collapsed"
+                  href="javascript:;"
+                  role="button"
+                  data-toggle="collapse"
+                  data-target="#shopCardTwo"
+                  aria-expanded="false"
+                  aria-controls="shopCardTwo"
+                >
+                  <span class="row align-items-center">
+                    <span class="col-9">
+                      <span class="media align-items-center">
+                        <span class="w-100 max-w-6rem mr-3">
+                          <img
+                            class="img-fluid"
+                            src="@/assets/svg/icons/icon-64.svg"
+                            alt="SVG"
+                          />
+                        </span>
+                        <span class="media-body">
+                          <span class="d-block font-size-1 font-weight-bold"
+                          >30 Days return</span
+                          >
+                        </span>
+                      </span>
+                    </span>
+                    <span class="col-3 text-right">
+                      <span class="card-btn-toggle">
+                        <span class="card-btn-toggle-default">&plus;</span>
+                        <span class="card-btn-toggle-active">&minus;</span>
+                      </span>
+                    </span>
+                  </span>
+                </a>
+              </div>
+              <div
+                id="shopCardTwo"
+                class="collapse"
+                aria-labelledby="shopCardHeadingTwo"
+                data-parent="#shopCartAccordion"
+              >
+                <div class="card-body">
+                  <p class="small mb-0">
+                    If you're not satisfied, return it for a full refund. We'll
+                    take care of disassembly and return shipping.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- End Card -->
+          </div>
+          <!-- End Accordion -->
+
+          <div class="mb-4">
+            <button
+              @click="submit"
+              type="button"
+              class="btn btn-block btn-primary btn-pill transition-3d-hover"
+            >
+              Add ao Carrinho
+            </button>
+          </div>
         </div>
+        <!-- End Product Description -->
       </div>
-      <!-- End Slider Nav -->
     </div>
     <!-- End Hero Section -->
 
-    <!-- Features Section -->
-    <div class="border-bottom">
-      <div class="container space-2">
-        <div class="row">
-          <div class="col-md-4 mb-7 mb-md-0">
-            <!-- Contacts -->
-            <div class="media">
-              <figure class="w-100 max-w-8rem mr-4">
-                <img
-                  class="img-fluid"
-                  src="@/assets/svg/icons/icon-4.svg"
-                  alt="SVG"
-                />
-              </figure>
-              <div class="media-body">
-                <h4 class="mb-1">Suporte 24/7</h4>
-                <p class="font-size-1 mb-0">
-                  Contate-nos 24 horas por dia, 7 dias por semana.
-                </p>
-              </div>
-            </div>
-            <!-- End Contacts -->
-          </div>
-
-          <div class="col-md-4 mb-7 mb-md-0">
-            <!-- Contacts -->
-            <div class="media">
-              <figure class="w-100 max-w-8rem mr-4">
-                <img
-                  class="img-fluid"
-                  src="@/assets/svg/icons/icon-64.svg"
-                  alt="SVG"
-                />
-              </figure>
-              <div class="media-body">
-                <h4 class="mb-1">1ª Troca Grátis</h4>
-                <p class="font-size-1 mb-0">
-                  Sua primeira troca é por nossa conta!
-                </p>
-              </div>
-            </div>
-            <!-- End Contacts -->
-          </div>
-
-          <div class="col-md-4">
-            <!-- Contacts -->
-            <div class="media">
-              <figure class="w-100 max-w-8rem mr-4">
-                <img
-                  class="img-fluid"
-                  src="@/assets/svg/icons/icon-65.svg"
-                  alt="SVG"
-                />
-              </figure>
-              <div class="media-body">
-                <h4 class="mb-1">FRETE GRÁTIS</h4>
-                <p class="font-size-1 mb-0">
-                  Em todos os pedidos acima de R$150.
-                </p>
-              </div>
-            </div>
-            <!-- End Contacts -->
+    <!-- Product Description Section -->
+    <div class="container space-top-2 space-lg-3">
+      <div class="row">
+        <div class="col-md-6 mb-5 mb-md-0">
+          <div class="pr-lg-4">
+            <h4>Detalhes</h4>
+            <p>
+              {{ product.description }}
+            </p>
           </div>
         </div>
       </div>
     </div>
-    <!-- End Features Section -->
+    <!-- End Product Description Section -->
 
-    <!-- Categories Section -->
-    <div class="container space-2 space-lg-3">
-      <!-- Title -->
-      <div class="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-        <h2>Nossos principais produtos.</h2>
-      </div>
-      <!-- End Title -->
-
-      <div class="row mb-2">
-        <div class="col-md-4 mb-3">
-          <!-- Card -->
-          <div class="card border shadow-none d-block">
-            <div class="card-body d-flex align-items-center p-0">
-              <div class="w-65 border-right">
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x400/img3.jpg"
-                  alt="Image Description"
-                />
-              </div>
-              <div class="w-35">
-                <div class="border-bottom">
-                  <img
-                    class="img-fluid"
-                    src="@/assets/img/380x360/img8.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x360/img7.jpg"
-                  alt="Image Description"
-                />
-              </div>
-            </div>
-            <div class="card-footer text-center py-4">
-              <h3 class="mb-1">Camisetas</h3>
-              <span class="d-block text-muted font-size-1 mb-3"
-                >A partir de R$29.99</span
-              >
-              <a
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover px-5"
-                href="#"
-                >Ver Tudo</a
-              >
-            </div>
-          </div>
-          <!-- End Card -->
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <!-- Card -->
-          <div class="card border shadow-none d-block">
-            <div class="card-body d-flex align-items-center p-0">
-              <div class="w-65 border-right">
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x400/img4.jpg"
-                  alt="Image Description"
-                />
-              </div>
-              <div class="w-35">
-                <div class="border-bottom">
-                  <img
-                    class="img-fluid"
-                    src="@/assets/img/380x360/img6.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x360/img5.jpg"
-                  alt="Image Description"
-                />
-              </div>
-            </div>
-            <div class="card-footer text-center py-4">
-              <h3 class="mb-1">Capas</h3>
-              <span class="d-block text-muted font-size-1 mb-3"
-                >A partir de R$29.99</span
-              >
-              <a
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover px-5"
-                href="#"
-                >Ver Tudo</a
-              >
-            </div>
-          </div>
-          <!-- End Card -->
-        </div>
-
-        <div class="col-md-4 mb-3">
-          <!-- Card -->
-          <div class="card border shadow-none d-block">
-            <div class="card-body d-flex align-items-center p-0">
-              <div class="w-65 border-right">
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x400/img2.jpg"
-                  alt="Image Description"
-                />
-              </div>
-              <div class="w-35">
-                <div class="border-bottom">
-                  <img
-                    class="img-fluid"
-                    src="@/assets/img/380x360/img4.jpg"
-                    alt="Image Description"
-                  />
-                </div>
-                <img
-                  class="img-fluid"
-                  src="@/assets/img/380x360/img3.jpg"
-                  alt="Image Description"
-                />
-              </div>
-            </div>
-            <div class="card-footer text-center py-4">
-              <h3 class="mb-1">Bonés</h3>
-              <span class="d-block text-muted font-size-1 mb-3"
-                >A partir de R$33.99</span
-              >
-              <a
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover px-5"
-                href="#"
-                >Ver Tudo</a
-              >
-            </div>
-          </div>
-          <!-- End Card -->
-        </div>
-      </div>
-    </div>
-    <!-- End Categories Section -->
-
-    <!-- Products Section -->
-    <div class="container space-2 space-lg-3">
-      <!-- Title -->
-      <div class="w-md-80 w-lg-40 text-center mx-md-auto mb-5 mb-md-9">
-        <h2>Oque mais está vendendo</h2>
-      </div>
-      <!-- End Title -->
-
-      <!-- Products -->
-      <div class="row mx-n2 mx-sm-n3 mb-3">
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img3.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 left-0 pt-3 pl-3">
-                <span class="badge badge-success badge-pill">New arrival</span>
-              </div>
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Accessories</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Herschel backpack in dark blue</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$56.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
+    <!-- Review Section -->
+    <div id="reviewSection" class="container space-bottom-2 space-bottom-lg-3">
+      <div class="row">
+        <div class="col-lg-4 mb-7 mb-lg-0">
+          <div class="border-bottom pb-4 mb-4">
+            <!-- Overall Rating Stats -->
+            <div class="card bg-primary text-white p-4 mb-3">
+              <div class="d-flex justify-content-center align-items-center">
+                <span class="display-4">4.7</span>
+                <div class="ml-3">
+                  <div class="small">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
                   </div>
-                  <span>0</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img1.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Clothing</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Front hoodie</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$91.88</span>
+                  <span><span class="font-weight-bold">287</span> reviews</span>
                 </div>
               </div>
             </div>
+            <!-- End Overall Rating Stats -->
 
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star text-muted"></i>
-                  </div>
-                  <span>40</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
+            <h3>Rating breakdown</h3>
 
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img4.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 left-0 pt-3 pl-3">
-                <span class="badge badge-danger badge-pill">Sold out</span>
-              </div>
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
+            <!-- Ratings -->
+            <ul class="list-unstyled list-sm-article">
+              <li>
                 <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Accessories</a
+                  class="row align-items-center mx-n2 font-size-1"
+                  href="javascript:;"
                 >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Herschel backpack in gray</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$29.99</span>
-                  <span class="text-body ml-1"><del>$33.99</del></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
+                  <div class="col-3 px-2">
+                    <span class="text-dark">5 stars</span>
                   </div>
-                  <span>125</span>
+                  <div class="col-7 px-2">
+                    <div class="progress" style="height: 4px;">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: 100%;"
+                        aria-valuenow="100"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-right px-2">
+                    <span>205</span>
+                  </div>
                 </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img6.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
+              </li>
+              <li>
                 <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Clothing</a
+                  class="row align-items-center mx-n2 font-size-1"
+                  href="javascript:;"
                 >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Front Originals adicolor t-shirt with trefoil logo</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$38.00</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
+                  <div class="col-3 px-2">
+                    <span class="text-dark">4 stars</span>
                   </div>
-                  <span>9</span>
+                  <div class="col-7 px-2">
+                    <div class="progress" style="height: 4px;">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: 53%;"
+                        aria-valuenow="53"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-right px-2">
+                    <span>55</span>
+                  </div>
                 </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img7.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
+              </li>
+              <li>
                 <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Accessories</a
+                  class="row align-items-center mx-n2 font-size-1"
+                  href="javascript:;"
                 >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Front mesh baseball cap with signature logo</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$8.88</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star text-muted"></i>
+                  <div class="col-3 px-2">
+                    <span class="text-dark">3 stars</span>
                   </div>
-                  <span>31</span>
+                  <div class="col-7 px-2">
+                    <div class="progress" style="height: 4px;">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: 20%;"
+                        aria-valuenow="20"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-right px-2">
+                    <span>23</span>
+                  </div>
                 </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img2.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 left-0 pt-3 pl-3">
-                <span class="badge badge-success badge-pill">New arrival</span>
-              </div>
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
+              </li>
+              <li>
                 <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Clothing</a
+                  class="row align-items-center mx-n2 font-size-1"
+                  href="javascript:;"
                 >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Front Originals adicolor t-shirt in gray</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$24.00</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
+                  <div class="col-3 px-2">
+                    <span class="text-dark">2 stars</span>
                   </div>
-                  <span>0</span>
+                  <div class="col-7 px-2">
+                    <div class="progress" style="height: 4px;">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: 0%;"
+                        aria-valuenow="0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-right px-2">
+                    <span>0</span>
+                  </div>
                 </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img5.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
+              </li>
+              <li>
                 <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Clothing</a
+                  class="row align-items-center mx-n2 font-size-1"
+                  href="javascript:;"
                 >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >COLLUSION Unisex mechanic print t-shirt</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$43.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
-                    <i class="far fa-star text-muted"></i>
+                  <div class="col-3 px-2">
+                    <span class="text-dark">1 stars</span>
                   </div>
-                  <span>0</span>
+                  <div class="col-7 px-2">
+                    <div class="progress" style="height: 4px;">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: 1%;"
+                        aria-valuenow="1"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col-2 text-right px-2">
+                    <span>4</span>
+                  </div>
                 </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
-              >
-                Add to Cart
-              </button>
-            </div>
+              </li>
+            </ul>
+            <!-- End Ratings -->
           </div>
-          <!-- End Product -->
+
+          <span class="d-block display-4 text-dark">77%</span>
+          <p class="small">of customers recommend this product</p>
         </div>
 
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5">
-          <!-- Product -->
-          <div class="card border shadow-none text-center h-100">
-            <div class="position-relative">
-              <img
-                class="card-img-top"
-                src="@/assets/img/300x180/img8.jpg"
-                alt="Image Description"
-              />
-
-              <div class="position-absolute top-0 right-0 pt-3 pr-3">
-                <button
-                  type="button"
-                  class="btn btn-xs btn-icon btn-outline-secondary rounded-circle"
-                  data-toggle="tooltip"
-                  data-placement="top"
-                  title="Save for later"
-                >
-                  <i class="fas fa-heart"></i>
-                </button>
+        <div class="col-lg-8">
+          <div class="pl-lg-4">
+            <!-- Title -->
+            <div class="border-bottom pb-4 mb-4">
+              <div class="d-flex justify-content-between align-items-center">
+                <h4 class="text-body mb-0">Sort on</h4>
               </div>
             </div>
+            <!-- End Title -->
 
-            <div class="card-body pt-4 px-4 pb-0">
-              <div class="mb-2">
-                <a
-                  class="d-inline-block text-body small font-weight-bold mb-1"
-                  href="#"
-                  >Accessories</a
-                >
-                <span class="d-block font-size-1">
-                  <a class="text-inherit" href="single-product.html"
-                    >Billabong Walled snapback in green</a
-                  >
-                </span>
-                <div class="d-block">
-                  <span class="text-dark font-weight-bold">$12.00</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="card-footer border-0 pt-0 pb-4 px-4">
-              <div class="mb-3">
-                <a class="d-inline-flex align-items-center small" href="#">
-                  <div class="text-warning mr-2">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                  </div>
-                  <span>2</span>
-                </a>
-              </div>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-primary btn-pill transition-3d-hover"
+            <!-- Review -->
+            <div class="border-bottom pb-4 mb-4">
+              <!-- Review Rating -->
+              <div
+                class="d-flex justify-content-between align-items-center text-body font-size-1 mb-3"
               >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <!-- End Product -->
-        </div>
-      </div>
-      <!-- End Products -->
+                <div class="text-warning">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span>April 3, 2019</span>
+              </div>
+              <!-- End Review Rating -->
 
-      <div class="text-center">
-        <a class="btn btn-primary btn-pill transition-3d-hover px-5" href="#"
-          >Mais Produtos</a
-        >
+              <h4 class="text-uppercase">I jus love it!</h4>
+              <p>
+                I bought this hat for my boyfriend, but then i found out he
+                cheated on me so I kept it and I love it!! I wear it all the
+                time and there is no problem with the fit even though its a
+                “mens” hat.
+              </p>
+
+              <!-- Reviewer -->
+              <div class="text-body font-size-1 mb-2">
+                <span class="text-dark font-weight-bold">Hailey</span>
+                <span>- Verified Purchase</span>
+              </div>
+              <!-- End Reviewer -->
+
+              <!-- Helpful -->
+              <div class="font-size-1">
+                <span>Was this helpful?</span>
+                <span class="ml-2">
+                  <a class="link-underline" href="javascript:;">Yes</a>
+                  <span>(45)</span>
+                </span>
+                <span class="ml-2">
+                  <a class="link-underline" href="javascript:;">No</a>
+                  <span>(21)</span>
+                </span>
+              </div>
+              <!-- End Helpful -->
+            </div>
+            <!-- End Review -->
+
+            <!-- Review -->
+            <div class="border-bottom pb-4 mb-4">
+              <!-- Review Rating -->
+              <div
+                class="d-flex justify-content-between align-items-center text-body font-size-1 mb-3"
+              >
+                <div class="text-warning">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span>January 19, 2019</span>
+              </div>
+              <!-- End Review Rating -->
+
+              <h4 class="text-uppercase">Really nice</h4>
+              <p>Material is great and the hat is comfortable and stylish.</p>
+
+              <!-- Reviewer -->
+              <div class="text-body font-size-1 mb-2">
+                <span class="text-dark font-weight-bold">David</span>
+                <span>- Verified Purchase</span>
+              </div>
+              <!-- End Reviewer -->
+
+              <!-- Helpful -->
+              <div class="font-size-1">
+                <span>Was this helpful?</span>
+                <span class="ml-2">
+                  <a class="link-underline" href="javascript:;">Yes</a>
+                  <span>(2)</span>
+                </span>
+                <span class="ml-2">
+                  <a class="link-underline" href="javascript:;">No</a>
+                  <span>(0)</span>
+                </span>
+              </div>
+              <!-- End Helpful -->
+            </div>
+            <!-- End Review -->
+
+            <!-- Review -->
+            <div class="border-bottom pb-4 mb-4">
+              <!-- Review Rating -->
+              <div
+                class="d-flex justify-content-between align-items-center text-body font-size-1 mb-3"
+              >
+                <div class="text-warning">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span>December 21, 2018</span>
+              </div>
+              <!-- End Review Rating -->
+
+              <p>
+                A really well built cap. It looks great and wears just as well.
+                A great staple in ball caps.
+              </p>
+
+              <!-- Reviewer -->
+              <div class="text-body font-size-1 mb-2">
+                <span class="text-dark font-weight-bold">Chrizelle</span>
+                <span>- Verified Purchase</span>
+              </div>
+              <!-- End Reviewer -->
+
+              <!-- Helpful -->
+              <div class="font-size-1">
+                <span>Was this helpful?</span>
+                <span class="ml-2">
+                  <a class="link-underline" href="javascript:;">Yes</a>
+                  <span>(0)</span>
+                </span>
+                <span class="ml-2">
+                  <a class="link-underline" href="javascript:;">No</a>
+                  <span>(0)</span>
+                </span>
+              </div>
+              <!-- End Helpful -->
+            </div>
+            <!-- End Review -->
+          </div>
+        </div>
       </div>
     </div>
-    <!-- End Products Section -->
+    <!-- End Review Section -->
   </div>
 </template>
 
-<style scoped>
-.slick-list {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-}
-.slick-track {
-  position: relative;
-  top: 0;
-  left: 0;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-.slick-slide {
-  float: left;
-  height: 100%;
-  min-height: 1px;
-}
-</style>
-
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
-  name: "Home",
+  name: "Show",
+  props: {
+    id: {
+      required: true,
+      type: String
+    }
+  },
+  computed: {
+    ...mapGetters(["getProductById"])
+  },
   data: () => ({
-    heroSection: [
-      {
-        id: 1,
-        name: "Boné Frontal",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sedeiusmod tempor incidunt ut labore et dolore magna aliqua.",
-        img: "/img/mockups/img5.png",
-        icon: "/img/100x100/img13.jpg"
-      },
-      {
-        id: 2,
-        name: "Boné Frontal",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sedeiusmod tempor incidunt ut labore et dolore magna aliqua.",
-        img: "/img/mockups/img6.png",
-        icon: "/img/100x100/img14.jpg"
-      },
-      {
-        id: 3,
-        name: "Boné Frontal",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisci elit, sedeiusmod tempor incidunt ut labore et dolore magna aliqua.",
-        img: "/img/mockups/img1.png",
-        icon: "/img/100x100/img15.jpg"
-      }
-    ]
+    product: {},
+    quantity: 1
   }),
   methods: {
+    ...mapActions(["addCart"]),
+    submit() {
+      this.addCart({ id: this.id, quantity: this.quantity }).then(() => {
+        this.$router.push({ name: "cart" });
+      });
+    },
     requireImg(path) {
       return require("@/assets" + path);
     }
   },
-  mounted() {}
+  mounted() {
+    this.product = this.getProductById(this.id);
+  }
 };
 </script>
