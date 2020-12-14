@@ -1,8 +1,9 @@
-# test-chico-rei
+# Test Chico Rei
 
 ## Project setup
 ```
 yarn install
+cp .env.example .env
 ```
 
 ### Compiles and hot-reloads for development
