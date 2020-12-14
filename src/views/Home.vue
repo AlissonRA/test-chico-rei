@@ -213,7 +213,7 @@
 
       <!-- Products -->
       <div class="row mx-n2 mx-sm-n3 mb-3">
-        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5" v-for="product in products" :key="product.id">
+        <div class="col-sm-6 col-lg-3 px-2 px-sm-3 mb-3 mb-sm-5" v-for="product in filterProductsNew" :key="product.id">
           <!-- Product -->
           <div class="card border shadow-none text-center h-100">
             <div class="position-relative">
@@ -265,6 +265,7 @@
 import HeroSection from "@/components/Home/HeroSection";
 
 import { mapActions, mapState } from "vuex";
+import { filter } from "lodash";
 
 export default {
   name: "Home",
@@ -274,7 +275,10 @@ export default {
   computed: {
     ...mapState({
       products: state => state.products
-    })
+    }),
+    filterProductsNew() {
+      return filter(this.products, "new")
+    }
   },
   methods: {
     ...mapActions(["addCart"]),
